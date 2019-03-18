@@ -22,9 +22,11 @@ const requestPosts = subreddit => ({
     subreddit
 });
 
-const receivePosts = subreddit => ({
+const receivePosts = (subreddit, json) => ({
     type: RECEIVE_POSTS,
-    subreddit
+    subreddit,
+    posts: json.data.children.map(child => child.data),
+    receivedAt: Date.now()
 });
 
 export const fetchPosts = subreddit => dispatch => {
@@ -33,3 +35,13 @@ export const fetchPosts = subreddit => dispatch => {
         .then(res => res.json, error => console.log(error))
         .then(json => dispatch(receivePosts(subreddit, json)));
 };
+
+const shouldFetchPosts = (state, subreddit) => {
+    const posts = state.postsBySubreddit[subreddit];
+    return posts ? true : posts.isFetching ? false : posts.didInvalidate;
+};
+
+export const fetchPostsIfNeeded = subreddit => (dispatch, getState) =>
+    shouldFetchPosts(getState(), subreddit)
+        ? dispatch(fetchPosts(subreddit))
+        : Promise.resolve();
