@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
 import thunkMiddleware from "redux-thunk";
 import { createLogger } from "redux-logger";
 import { createStore, applyMiddleware } from "redux";
-import { selectSubreddit, fetchPosts, fetchPostsIfNeeded } from "./actions";
+import { selectSubreddit, fetchPostsIfNeeded } from "./actions";
 import rootReducer from "./reducers";
+import Root from "./containers/Root";
 
 const loggerMiddleware = createLogger();
 
@@ -19,4 +19,4 @@ store
     .dispatch(fetchPostsIfNeeded("reactjs"))
     .then(() => console.log(store.getState()));
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<Root />, document.getElementById("root"));
